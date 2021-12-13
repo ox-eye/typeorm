@@ -652,12 +652,19 @@ export class SubjectExecutor {
                 .createQueryBuilder()
                 .softDelete()
                 .from(relation.inverseEntityMetadata.target)
-                .returning(primaryPropertyName)
+                .returning([primaryPropertyName])
                 .updateEntity(this.options && this.options.reload === false ? false : true)
                 .callListeners(false);
             softDeleteQueryBuilder.where(`${relation.inverseSidePropertyPath} in (:...ids)`, {ids: ids});
             updateResult = await softDeleteQueryBuilder.execute();
-            const parentIds = updateResult.raw.map((row: any) => row[Object.keys(row)[0]]);
+            let parentIds;
+            // Only in oracle the returning value is a list of the affected row primary keys and not list of dictionary
+            if (this.queryRunner.connection.driver instanceof OracleDriver){
+                parentIds = updateResult.raw[0];
+            }
+            else {
+                parentIds = updateResult.raw.map((row: any) => row[Object.keys(row)[0]]);
+            }
             if (parentIds.length) {
                 for (const subRelation of relation.inverseEntityMetadata.relations) {
                     await this.executeSoftRemoveRecursive(subRelation, parentIds);

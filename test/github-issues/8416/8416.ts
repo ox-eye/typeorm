@@ -6,7 +6,7 @@ import { Category } from "./entity/Category";
 import { Post } from "./entity/Post";
 import {Author} from "./entity/Author";
 
-describe.only("Soft Delete Recursive cascade", () => {
+describe("Soft Delete Recursive cascade", () => {
 
     // -------------------------------------------------------------------------
     // Configuration
@@ -47,7 +47,7 @@ describe.only("Soft Delete Recursive cascade", () => {
                 new Author(),
                 new Author()
             ];
-            const categoryToInsert = await categoryRepository.save(new Category());
+            const categoryToInsert = new Category();
             categoryToInsert.posts = [
                 firstPost,
                 secondPost
