@@ -16,6 +16,8 @@ import { OrmUtils } from "../util/OrmUtils"
 import { UpdateResult } from "../query-builder/result/UpdateResult"
 import { ObjectUtils } from "../util/ObjectUtils"
 import { InstanceChecker } from "../util/InstanceChecker"
+import {RelationMetadata} from "../metadata/RelationMetadata";
+import {OracleDriver} from "../driver/oracle/OracleDriver";
 
 /**
  * Executes all database operations (inserts, updated, deletes) that must be executed
