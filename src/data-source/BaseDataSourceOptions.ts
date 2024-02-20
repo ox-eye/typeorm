@@ -103,6 +103,11 @@ export interface BaseDataSourceOptions {
     readonly synchronize?: boolean
 
     /**
+     * Indicates if synchronize should not drop columns and tables
+     */
+    readonly synchronizeWithoutDrops?: boolean;
+
+    /**
      * Indicates if migrations should be auto run on every application launch.
      * Alternative to it, you can use CLI and run migrations:run command.
      */

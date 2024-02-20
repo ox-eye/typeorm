@@ -213,20 +213,27 @@ export class RdbmsSchemaBuilder implements SchemaBuilder {
      * Order of operations matter here.
      */
     protected async executeSchemaSyncOperationsInProperOrder(): Promise<void> {
-        await this.dropOldViews()
-        await this.dropOldForeignKeys()
-        await this.dropOldIndices()
-        await this.dropOldChecks()
-        await this.dropOldExclusions()
-        await this.dropCompositeUniqueConstraints()
+        if (!this.connection.options.synchronizeWithoutDrops) {
+            await this.dropOldViews()
+            await this.dropOldForeignKeys()
+            await this.dropOldIndices()
+            await this.dropOldChecks()
+            await this.dropOldExclusions()
+            await this.dropCompositeUniqueConstraints()
+        }
+
         // await this.renameTables();
         await this.renameColumns()
         await this.changeTableComment()
         await this.createNewTables()
-        await this.dropRemovedColumns()
+        if (!this.connection.options.synchronizeWithoutDrops) {
+            await this.dropRemovedColumns();
+        }
         await this.addNewColumns()
         await this.updatePrimaryKeys()
-        await this.updateExistColumns()
+        if (!this.connection.options.synchronizeWithoutDrops) {
+            await this.updateExistColumns()
+        }
         await this.createNewIndices()
         await this.createNewChecks()
         await this.createNewExclusions()

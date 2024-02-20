@@ -16,6 +16,8 @@ import { OrmUtils } from "../util/OrmUtils"
 import { UpdateResult } from "../query-builder/result/UpdateResult"
 import { ObjectUtils } from "../util/ObjectUtils"
 import { InstanceChecker } from "../util/InstanceChecker"
+import {RelationMetadata} from "../metadata/RelationMetadata";
+import {OracleDriver} from "../driver/oracle/OracleDriver";
 
 /**
  * Executes all database operations (inserts, updated, deletes) that must be executed
@@ -829,6 +831,10 @@ export class SubjectExecutor {
                     }
 
                     updateResult = await softDeleteQueryBuilder.execute()
+
+                    for (const relation of subject.metadata.relations) {
+                        await this.executeSoftRemoveRecursive(relation, [Reflect.get(subject.identifier, subject.metadata.primaryColumns[0].propertyName)]);
+                    }
                 }
 
                 subject.generatedMap = updateResult.generatedMaps[0]
@@ -864,6 +870,39 @@ export class SubjectExecutor {
                 // }
             }),
         )
+    }
+
+    /**
+     * Execute soft remove recursively.
+     */
+    protected async executeSoftRemoveRecursive(relation: RelationMetadata, ids: any[]): Promise<void> {
+        if (relation.isCascadeSoftRemove){
+            let primaryPropertyName = relation.inverseEntityMetadata.primaryColumns[0].propertyName;
+            let updateResult: UpdateResult;
+            let softDeleteQueryBuilder = this.queryRunner
+                .manager
+                .createQueryBuilder()
+                .softDelete()
+                .from(relation.inverseEntityMetadata.target)
+                .returning([primaryPropertyName])
+                .updateEntity(this.options && this.options.reload === false ? false : true)
+                .callListeners(false);
+            softDeleteQueryBuilder.where(`${relation.inverseSidePropertyPath} in (:...ids)`, {ids: ids});
+            updateResult = await softDeleteQueryBuilder.execute();
+            let parentIds;
+            // Only in oracle the returning value is a list of the affected row primary keys and not list of dictionary
+            if (this.queryRunner.connection.driver instanceof OracleDriver){
+                parentIds = updateResult.raw[0];
+            }
+            else {
+                parentIds = updateResult.raw.map((row: any) => row[Object.keys(row)[0]]);
+            }
+            if (parentIds.length) {
+                for (const subRelation of relation.inverseEntityMetadata.relations) {
+                    await this.executeSoftRemoveRecursive(subRelation, parentIds);
+                }
+            }
+        }
     }
 
     /**
