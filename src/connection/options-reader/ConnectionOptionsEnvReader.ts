@@ -45,6 +45,9 @@ export class ConnectionOptionsEnvReader {
                 synchronize: OrmUtils.toBoolean(
                     PlatformTools.getEnvVariable("TYPEORM_SYNCHRONIZE"),
                 ),
+                synchronizeWithoutDrops: OrmUtils.toBoolean(
+                    PlatformTools.getEnvVariable("TYPEORM_SYNCHRONIZE_WITHOUT_DROPS")
+                ),
                 dropSchema: OrmUtils.toBoolean(
                     PlatformTools.getEnvVariable("TYPEORM_DROP_SCHEMA"),
                 ),

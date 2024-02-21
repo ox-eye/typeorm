@@ -1,8 +1,8 @@
 {
-  "name": "typeorm",
-  "private": true,
+  "name": "@oxeye/typeorm",
+  "private": false,
   "version": "0.3.20",
-  "description": "Data-Mapper ORM for TypeScript, ES7, ES6, ES5. Supports MySQL, PostgreSQL, MariaDB, SQLite, MS SQL Server, Oracle, MongoDB databases.",
+  "description": "Data-Mapper ORM for TypeScript, ES7, ES6, ES5. Supports MySQL, PostgreSQL, MariaDB, SQLite, MS SQL Server, Oracle, MongoDB databases. [oxeye version]",
   "license": "MIT",
   "readmeFilename": "README.md",
   "author": {
@@ -66,10 +66,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/typeorm/typeorm.git"
+    "url": "https://github.com/ox-eye/typeorm.git"
   },
   "bugs": {
-    "url": "https://github.com/typeorm/typeorm/issues"
+    "url": "https://github.com/ox-eye/typeorm/issues"
   },
   "homepage": "https://typeorm.io",
   "tags": [
