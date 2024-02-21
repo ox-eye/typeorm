@@ -20,7 +20,7 @@
   <br>
 </div>
 
-TypeORM is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping)
+TypeORM [Oxeye version] is an [ORM](https://en.wikipedia.org/wiki/Object-relational_mapping)
 that can run in NodeJS, Browser, Cordova, PhoneGap, Ionic, React Native, NativeScript, Expo, and Electron platforms
 and can be used with TypeScript and JavaScript (ES2021).
 Its goal is to always support the latest JavaScript features and provide additional features
